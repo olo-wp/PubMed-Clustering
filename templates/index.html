@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class="title">
+    PLACEHOLDER
+</div>
+<h1>
+    Insert list of PMID's separetad by comma or newline
+</h1>
+<textarea id="PMIDS" rows = "10" cols = "30", placeholder="Enter PMID's here"></textarea>
+<br>
+<button onclick="sendData()"> generate clusters</button>
+<div id="plot>"> </div>
+{% endblock %}

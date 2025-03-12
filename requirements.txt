@@ -1,0 +1,10 @@
+scikit-learn
+matplotlib
+mplcursors
+pandas
+numpy
+bs4
+lxml
+flask
+flask-sqlalchemy
+mpld3

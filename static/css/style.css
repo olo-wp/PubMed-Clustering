@@ -1,0 +1,18 @@
+head{
+    margin: 0;
+    background-color: darkslategray;
+}
+
+body{
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: large;
+    background-color: aliceblue;
+}
+
+.title{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 30px;
+    background-color: darkslategray;
+    color: aliceblue;
+}
