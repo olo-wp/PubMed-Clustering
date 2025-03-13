@@ -1,67 +1,61 @@
-import matplotlib.pyplot as plt
-import matplotlib
-import mplcursors as mpl
-from matplotlib.lines import Line2D
+import plotly.express as px
+import plotly.graph_objects as go
 from sklearn.manifold import MDS
-import mpld3
-from mpld3 import plugins
-from data.colors import colors as c
+import pandas as pd
+from flask import jsonify
 
 def plotClusters(df, X, DD):
-    colors = c
-
-    last_col = max(df["cluster"]) + 1
-    colors = colors[:last_col]
-
-    color_map = {i: colors[i] for i in range(last_col)}
-    df["col"] = df["cluster"].map(color_map)
-
-    fig, ax = plt.subplots(figsize=(7, 7))
-
-    plt.style.use('dark_background')
-
-
     mds = MDS(n_components=2, dissimilarity='euclidean')
     X_mds = mds.fit_transform(DD)
-
     df["MDS1"] = X_mds[:, 0]
     df["MDS2"] = X_mds[:, 1]
 
+    colors = px.colors.qualitative.Plotly
+    last_col = max(df["cluster"]) + 1
+    color_map = {i: colors[i % len(colors)] for i in range(last_col)}
+    df["col"] = df["cluster"].map(color_map)
 
-    """
-    pca = PCA(n_components=2)
-    X_pca = pca.fit_transform(DD)
-
-    df["PCA1"] = X_pca[:, 0]
-    df["PCA2"] = X_pca[:, 1]
-    """
-
-    scatter = ax.scatter(df["MDS1"], df["MDS2"], c=df["col"], alpha=0.6, s=40)
-
-    labels = [f"PMID: {pmid}" for pmid in df["PMID"]]
-
-    tooltip = plugins.PointLabelTooltip(scatter, labels=labels)
-    plugins.connect(fig, tooltip)
-
-    centroids = df.groupby("cluster")[["MDS1", "MDS2"]].mean()
-
-    ax.scatter(centroids["MDS1"], centroids["MDS2"], marker='^', c=colors[:len(centroids)], s=30)
-
-    scatter_plots = []
-    labels_leg = []
+    fig = go.Figure()
 
     for cluster in sorted(df["cluster"].unique()):
         cluster_data = df[df["cluster"] == cluster]
-        scatter = ax.scatter(cluster_data["MDS1"], cluster_data["MDS2"],
-                             c=color_map[cluster], alpha=0.6, s=40)
-        scatter_plots.append(scatter)
-        labels_leg.append(f"Cluster {cluster+1}")
+        fig.add_trace(
+            go.Scatter(
+                x=cluster_data["MDS1"],
+                y=cluster_data["MDS2"],
+                mode='markers',
+                marker=dict(color=color_map[cluster], size=10, opacity=0.6),
+                name=f"Cluster {cluster + 1}",
+                text=[f"PMID: {pmid}" for pmid in cluster_data["PMID"]],  # Tooltip z PMID
+                hoverinfo='text+x+y'
+            )
+        )
 
-    legend = plugins.InteractiveLegendPlugin(scatter_plots, labels_leg, alpha_unsel=0.2, alpha_over=1.0)
-    plugins.connect(fig, legend)
+    centroids = df.groupby("cluster")[["MDS1", "MDS2"]].mean()
+    for cluster in centroids.index:
+        fig.add_trace(
+            go.Scatter(
+                x=[centroids.loc[cluster, "MDS1"]],
+                y=[centroids.loc[cluster, "MDS2"]],
+                mode='markers',
+                marker=dict(color=color_map[cluster], size=15, symbol='triangle-up'),
+                name=f"Centroid {cluster + 1}",
+                hoverinfo='none'
+            )
+        )
 
-    ax.xlabel("PCA1")
-    ax.ylabel("PCA2")
-    ax.title("Cluster visualisation")
+    fig.update_layout(
+        title="Cluster Visualization",
+        xaxis_title="MDS1",
+        yaxis_title="MDS2",
+        template="plotly_dark",
+        legend_title="Clusters",
+        hovermode='closest'
+    )
 
-    return mpld3.fig_to_html(fig)
+    try:
+        plot_html = fig.to_html(full_html=False)
+        return plot_html
+    except Exception as e:
+        print(e)
+        return jsonify({"plot": "fail"})

@@ -16,3 +16,9 @@ body{
     background-color: darkslategray;
     color: aliceblue;
 }
+
+#plot{
+    width: 700px;
+    height: 700px;
+    background-color: darkslategray;
+}

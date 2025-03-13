@@ -1,6 +1,39 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<script>
+    async function Plot() {
+        const Input = document.getElementById("PMIDS").value;
+        const PMID_list = Input.split(/\s*,\s*|\n/).map(s => s.trim()).filter(s => s);
+
+        if (!PMID_list.length) {
+            alert("Enter at least one PMID");
+            return;
+        }
+
+        try {
+            const response = await fetch("/plot", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(PMID_list)
+            });
+
+            const result = await response.json();
+            alert(result.data)
+
+
+            if (response.ok) {
+                Plotly.newPlot('plot', result.data, result.layout);
+            } else {
+                alert(result);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error);
+        }
+    }
+</script>
+
 {% endblock %}
 
 {% block body %}
@@ -12,6 +45,7 @@
 </h1>
 <textarea id="PMIDS" rows = "10" cols = "30", placeholder="Enter PMID's here"></textarea>
 <br>
-<button onclick="sendData()"> generate clusters</button>
-<div id="plot>"> </div>
+<button onclick="Plot()"> generate clusters</button>
+<h2>Plot:</h2>
+<div id="plot"> </div>
 {% endblock %}

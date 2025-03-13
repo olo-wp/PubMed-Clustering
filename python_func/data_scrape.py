@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 
+categories = ["title", "gdsType", "summary", "taxon", "Overall design"]
 
 def getPMIDdict(PMIDlist):
     return {p:set() for p in PMIDlist}
