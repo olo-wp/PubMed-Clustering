@@ -15,8 +15,13 @@ def index():
 @app.route("/plot", methods=["POST"])
 def plot():
     PMIDlist = request.get_json()
-    print(type(PMIDlist))
+    print(type(PMIDlist['pmids']))
+    print(PMIDlist['method'])
     print(PMIDlist)
+    Clusters = int(PMIDlist['clusters'])
+    Method = PMIDlist['method']
+    Reduction = PMIDlist['reduction']
+    PMIDlist = PMIDlist['pmids']
     if not PMIDlist:
         return jsonify("No data"), 400
     try:
@@ -26,12 +31,11 @@ def plot():
         all_GEOS = p_scrape.getGEO(PMIDlist)
         data = p_scrape.geoToDf(all_GEOS, PMID_GEOdict)
         data = p_cluster.vectorize(data)
-        data_fin, X, distance_matrix = p_cluster.get_Clusters2(data, 5)
-        plot_html = p_plot.plotClusters(data_fin, X, distance_matrix)
-        print(plot_html.layout)
+        data_fin, X = p_cluster.get_Clusters(data,n_clusters=Clusters,mode=Method)
+        plot_html = p_plot.plotClusters(data_fin, X, dim_reduction=Reduction)
+        print(type(plot_html))
 
         return plot_html
-
     except Exception as e:
         print(e)
         return jsonify("Input should be PMID numbers separated by commas or newline"), 400

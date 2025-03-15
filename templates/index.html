@@ -4,6 +4,9 @@
 <script>
     async function Plot() {
         const Input = document.getElementById("PMIDS").value;
+        const Method = document.getElementById("word").value;
+        const Clusters = document.getElementById("number").value;
+        const Reduction = document.getElementById("red").value;
         const PMID_list = Input.split(/\s*,\s*|\n/).map(s => s.trim()).filter(s => s);
 
         if (!PMID_list.length) {
@@ -15,11 +18,19 @@
             const response = await fetch("/plot", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(PMID_list)
+                body: JSON.stringify({
+                    pmids: PMID_list,
+                    method: Method,
+                    clusters: Clusters,
+                    reduction: Reduction
+                })
             });
 
             const result = await response.json();
-            alert(result.data)
+
+            if(!result || !result.data || !result.layout){
+                throw new Error("Plotting error: no data recieved")
+            }
 
 
             if (response.ok) {
@@ -43,7 +54,24 @@
 <h1>
     Insert list of PMID's separetad by comma or newline
 </h1>
-<textarea id="PMIDS" rows = "10" cols = "30", placeholder="Enter PMID's here"></textarea>
+<ul id = "input_list">
+    <li><textarea id="PMIDS" rows = "10" cols = "30", placeholder="Enter PMID's here"></textarea></li>
+    <li><label for="number"> Number of clusters</label> <input type="number" id="number" name="number" min="2" max = "10" required></li>
+    <li><label for="word"> Clustering method</label>
+        <select id="word" name="word" required>
+            <option value="KMEANS">KMEANS</option>
+            <option value="Agglomerative">Agglomerative</option>
+        </select>
+    </li>
+    <li><label for="red"> Reduction method </label>
+        <select id="red" name="red" required>
+            <option value="PCA"> PCA </option>
+            <option value="TSNE"> TSNE </option>
+            <option value="SVD"> SVD </option>
+            <option value="UMAP"> UMAP </option>
+        </select>
+    </li>
+</ul>
 <br>
 <button onclick="Plot()"> generate clusters</button>
 <h2>Plot:</h2>
