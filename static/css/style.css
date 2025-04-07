@@ -3,12 +3,30 @@ head{
     background-color: darkslategray;
 }
 
-body{
+.input_field{
     margin: 0;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: large;
+    color: darkslategray;
     background-color: aliceblue;
+    float: left;
+    width: calc(100% - 1000px);
 }
+#plot{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    width: 1000px;
+    height: 700px;
+    color: aliceblue;
+    background-color: darkslategray;
+    float: left;
+    font-size: 30px;
+}
+#plot.text {
+    position: absolute;
+    top: 10px;  /* Odstęp od góry */
+    right: 10px; /* Odstęp od prawej */
+}
+
 
 .title{
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -17,18 +35,16 @@ body{
     color: aliceblue;
 }
 
-#input_list ul{
+#input_list{
     margin: 0;
     padding: 0;
     list-style: none;
 }
-#input_list ul li{
+#input_list li{
     margin: 0;
     padding: 0;
 }
 
-#plot{
-    width: 700px;
-    height: 700px;
-    background-color: darkslategray;
+body{
+    background-color: aliceblue;
 }

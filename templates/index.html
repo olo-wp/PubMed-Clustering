@@ -49,31 +49,34 @@
 
 {% block body %}
 <div class="title">
-    PLACEHOLDER
+    PubMed clusterization tool
 </div>
-<h1>
-    Insert list of PMID's separetad by comma or newline
-</h1>
-<ul id = "input_list">
-    <li><textarea id="PMIDS" rows = "10" cols = "30", placeholder="Enter PMID's here"></textarea></li>
-    <li><label for="number"> Number of clusters</label> <input type="number" id="number" name="number" min="2" max = "10" required></li>
-    <li><label for="word"> Clustering method</label>
-        <select id="word" name="word" required>
-            <option value="KMEANS">KMEANS</option>
-            <option value="Agglomerative">Agglomerative</option>
-        </select>
-    </li>
-    <li><label for="red"> Reduction method </label>
-        <select id="red" name="red" required>
-            <option value="PCA"> PCA </option>
-            <option value="TSNE"> TSNE </option>
-            <option value="SVD"> SVD </option>
-            <option value="UMAP"> UMAP </option>
-        </select>
-    </li>
-</ul>
-<br>
-<button onclick="Plot()"> generate clusters</button>
-<h2>Plot:</h2>
-<div id="plot"> </div>
+<div class="input_field">
+    <ul id = "input_list">
+        <li>
+            <label for="PMIDS"> Enter PMID numbers here</label>
+            <textarea id="PMIDS" rows = "10" cols = "30" placeholder="Enter PMID's here"></textarea>
+        </li>
+        <li><label for="number"> Number of clusters</label> <input type="number" id="number" value="3" name="number" min="2" max = "10" required></li>
+        <li><label for="word"> Clustering method</label>
+            <select id="word" name="word" required>
+                <option value="KMEANS">KMEANS</option>
+                <option value="Agglomerative">Agglomerative</option>
+            </select>
+        </li>
+        <li><label for="red"> Reduction method </label>
+            <select id="red" name="red" required>
+                <option value="UMAP"> UMAP </option>
+                <option value="PCA"> PCA </option>
+                <option value="TSNE"> TSNE </option>
+                <option value="SVD"> SVD </option>
+            </select>
+        </li>
+    </ul>
+    <br>
+    <button onclick="Plot()"> generate clusters</button>
+</div>
+<div id="plot">
+    <div class="text">Plot:</div>
+</div>
 {% endblock %}

@@ -25,7 +25,6 @@ def plot():
     if not PMIDlist:
         return jsonify("No data"), 400
     try:
-        #PMIDlist = list(map(int, data))
 
         PMID_GEOdict = p_scrape.getPMIDdict(PMIDlist)
         all_GEOS = p_scrape.getGEO(PMIDlist)
@@ -33,7 +32,6 @@ def plot():
         data = p_cluster.vectorize(data)
         data_fin, X = p_cluster.get_Clusters(data,n_clusters=Clusters,mode=Method)
         plot_html = p_plot.plotClusters(data_fin, X, dim_reduction=Reduction)
-        print(type(plot_html))
 
         return plot_html
     except Exception as e:
